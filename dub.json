@@ -6,7 +6,6 @@
 	"description": "D binding of ATen",
 	"copyright": "Copyright © 2018, Shigeki Karita",
 	"license": "BSL-1.0",
-    "preBuildCommands": [ "make" ],
-    "lflags": [ "-Lbuild/stage/lib" ],
+    "preBuildCommands": [ "make libATen.so.1" ],
     "libs": [ "ATen", "stdc++" ]
 }

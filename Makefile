@@ -3,6 +3,7 @@ SHELL := zsh
 ACT := . venv/bin/activate
 
 ATEN_ROOT := build/stage
+ATEN_LIB := $(ATEN_ROOT)/lib/libATen.so.1
 INCPATH := -I$(ATEN_ROOT)/include -I. -I$(CONDA_PREFIX)/include
 LIBPATH := -L$(ATEN_ROOT)/lib -L$(CONDA_PREFIX)/lib
 LIBS := -lATen
@@ -18,7 +19,7 @@ endif
 
 .PHONY: all clean
 
-all: libATen.so
+all: $(ATEN_LIB)
 
 Miniconda3-latest-Linux-x86_64.sh:
 	wget https://repo.continuum.io/miniconda/$@
@@ -44,12 +45,16 @@ install-hdf5-deps:
 update-aten:
 	git submodule foreach git pull origin master
 
-libATen.so: venv install-aten-deps
+$(ATEN_LIB): venv install-aten-deps
 	mkdir -p $(ATEN_ROOT)/../
 	$(ACT) && cd $(ATEN_ROOT)/../; \
 	  CMAKE_PREFIX_PATH="$(dirname $(which conda))/../" cmake ../ATen -DCMAKE_INSTALL_PREFIX=`pwd`/../$(ATEN_ROOT) -DCMAKE_CXX_FLAGS:="-D__STDC_FORMAT_MACROS=1" ; \
 	make install -j$(JOBS)
-	ln -s $(ATEN_ROOT)/lib/$@ .
+	ln -s $@ .
 
-test: $(ATEN_ROOT)/lib/libATen.so
-	LD_LIBRARY_PATH=$(ATEN_ROOT)/lib:$(LD_LIBRARY_PATH) dub test
+test: $(ATEN_LIB)
+	dub test
+
+clean:
+	dub clean
+

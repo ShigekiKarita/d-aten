@@ -56,5 +56,5 @@ unittest
     }
     assert(raised);
     t.writeln;
-    assert(t.toString == "Undefined Tensor");
+    assert(t.toString == "UndefinedTensor");
 }
