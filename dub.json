@@ -1,0 +1,9 @@
+{
+	"name": "d-aten",
+	"authors": [
+		"Shigeki Karita"
+	],
+	"description": "D binding of ATen",
+	"copyright": "Copyright © 2018, Shigeki Karita",
+	"license": "BSL-1.0"
+}
