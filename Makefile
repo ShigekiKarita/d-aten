@@ -27,15 +27,16 @@ venv: Miniconda3-latest-Linux-x86_64.sh
 	sh $< -b -p $(PWD)/$@
 	$(ACT) && conda config --set always_yes yes
 	$(ACT) && conda update conda
-	$(ACT) && conda insfo -a
+	$(ACT) && conda info -a
 
 install-aten-deps: venv
 	$(ACT) && conda config --set always_yes yes
 	$(ACT) && conda update conda
 	$(ACT) && conda info -a
 	$(ACT) && conda uninstall libgcc; echo ok
-	$(ACT) && conda install pyyaml # numpy mkl setuptools cmake cffi
-	$(ACT) && conda install -c soumith magma-cuda90
+	$(ACT) && conda install pyyaml mkl # numpy setuptools cmake cffi
+	# optional deps
+	# $(ACT) && conda install -c soumith magma-cuda90
 
 install-hdf5-deps:
 	$(ACT) && conda install hdf5==1.8.17

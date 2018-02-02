@@ -8,7 +8,6 @@ extern(C++, at) {
     }
 
     private class UndefinedTensor : TensorImpl {
-        import std.typecons : scoped;
         override const(char*) toString() const;
         override long dim() const;
     }
@@ -39,18 +38,23 @@ extern(C++, at) {
     }
 }
 
+import std.typecons : scoped;
 immutable undefined = new at.UndefinedTensor;
 
 
 unittest
 {
     auto t = new at.Tensor;
-    import core.stdcpp.exception;
+    assert(!t.defined());
 
+    import E = core.stdcpp.exception;
+    bool raised = false;
     try {
         t.dim();
-    } catch (core.stdcpp.exception.std.exception e) {
+    } catch (E.std.exception e) {
+        raised = true;
     }
-    t.print();
+    assert(raised);
     t.writeln;
+    assert(t.toString == "Undefined Tensor");
 }
