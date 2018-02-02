@@ -48,3 +48,6 @@ $(ATEN_ROOT)/lib/libATen.so: venv # install-aten-deps
 	$(ACT) && cd $(ATEN_ROOT)/../; \
 	  CMAKE_PREFIX_PATH="$(dirname $(which conda))/../" cmake ../ATen -DCMAKE_INSTALL_PREFIX=`pwd`/../$(ATEN_ROOT) -DCMAKE_CXX_FLAGS:="-D__STDC_FORMAT_MACROS=1" ; \
 	make install -j$(JOBS)
+
+test: $(ATEN_ROOT)/lib/libATen.so
+	LD_LIBRARY_PATH=$(ATEN_ROOT)/lib:$(LD_LIBRARY_PATH) dub test
