@@ -2,6 +2,19 @@ module daten;
 import std.stdio;
 
 extern(C++, at) {
+    class Context {
+        // this();
+        void doInitCUDA();
+        bool hasCUDA() const;
+    }
+
+    class Type {
+        Context context;
+        this(Context context) {
+            this.context = context;
+        }
+    }
+
     abstract class TensorImpl {
         const(char*) toString() const;
         long dim() const;
@@ -44,6 +57,10 @@ immutable undefined = new at.UndefinedTensor;
 
 unittest
 {
+    auto ctx = new Context;
+    // ctx.doInitCUDA();
+    // assert(ctx.hasCUDA());
+
     auto t = new at.Tensor;
     assert(!t.defined());
 
