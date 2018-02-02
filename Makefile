@@ -1,4 +1,5 @@
 CXX := g++
+SHELL := zsh
 ACT := . venv/bin/activate
 
 ATEN_ROOT := build/stage
@@ -17,7 +18,7 @@ endif
 
 .PHONY: all clean
 
-all: $(ATEN_ROOT)/lib/libATen.so
+all: libATen.so
 
 Miniconda3-latest-Linux-x86_64.sh:
 	wget https://repo.continuum.io/miniconda/$@
@@ -33,8 +34,7 @@ install-aten-deps: venv
 	$(ACT) && conda update conda
 	$(ACT) && conda info -a
 	$(ACT) && conda uninstall libgcc; echo ok
-	$(ACT) && conda install numpy pyyaml mkl setuptools cmake cffi
-	# optional
+	$(ACT) && conda install pyyaml # numpy mkl setuptools cmake cffi
 	$(ACT) && conda install -c soumith magma-cuda90
 
 install-hdf5-deps:
@@ -43,11 +43,12 @@ install-hdf5-deps:
 update-aten:
 	git submodule foreach git pull origin master
 
-$(ATEN_ROOT)/lib/libATen.so: venv # install-aten-deps
+libATen.so: venv install-aten-deps
 	mkdir -p $(ATEN_ROOT)/../
 	$(ACT) && cd $(ATEN_ROOT)/../; \
 	  CMAKE_PREFIX_PATH="$(dirname $(which conda))/../" cmake ../ATen -DCMAKE_INSTALL_PREFIX=`pwd`/../$(ATEN_ROOT) -DCMAKE_CXX_FLAGS:="-D__STDC_FORMAT_MACROS=1" ; \
 	make install -j$(JOBS)
+	ln -s $(ATEN_ROOT)/lib/$@ .
 
 test: $(ATEN_ROOT)/lib/libATen.so
 	LD_LIBRARY_PATH=$(ATEN_ROOT)/lib:$(LD_LIBRARY_PATH) dub test
